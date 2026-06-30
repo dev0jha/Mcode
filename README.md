@@ -7,3 +7,7 @@
 - Pagination
 
 ![Pagination](./public/pagination.png)
+
+- AutoComplete Search Bar
+
+![Search Bar](./public/SearchBar.png)

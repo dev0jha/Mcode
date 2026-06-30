@@ -6,24 +6,42 @@ export default function AutoSearch() {
   const [recipes, setRecipes] = useState([]);
   const [input, setInput] = useState("");
   const [visible, setVisible] = useState(false);
+  const [cache, setCache] = useState({});
 
   useEffect(() => {
+    {
+      /* Fix cache issue no api calls    */
+    }
     async function fetchRecipes() {
+      if (cache[input]) {
+        console.log("Cache returned :", input);
+        setRecipes(cache[input]);
+        return;
+      }
       try {
-        console.log("API called", input); // their is an error where api called repeatedly 
+        console.log("API called", input); // their is an error where api called repeatedly
         const res = await fetch(
           `https://dummyjson.com/recipes/search?q=${input}`
         );
 
         const data = await res.json();
         setRecipes(data.recipes);
+        setCache((prev) => ({ ...prev, [input]: data.recipes }));
       } catch (error) {
         console.error(error);
       }
     }
 
-    fetchRecipes();
-  }, [input]);
+    {
+      /* Use Debouncing to Prevent API Call Opitimazation   */
+    }
+    const timer = setTimeout(() => {
+      fetchRecipes();
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [input, cache]);
 
   return (
     <div className="flex flex-col items-center pt-50">
